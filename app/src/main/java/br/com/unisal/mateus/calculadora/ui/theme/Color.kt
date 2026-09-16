@@ -14,20 +14,19 @@ val Green80 = Color(0xFF558B2F)
 
 val White100 = Color(0xFFFFFFFF)
 
-val MinimalistaFundo = Color(0xFFF7F9FA)              // Fundo Branco
+// Cores do tema Terminal
+val TerminalGreen = Color(0xFF39FF14)
 
-val MinimalistaSuperficie = Color(0xFFFFFFFF)        // Botões branco
+val TerminalGreenDark = Color(0xFF123A12)
 
-val MinimalistaTextoNumero = Color(0xFF1E293B)       // Texto escuro
+val TerminalGreenLight = Color(0xFF9AEF8F)
 
-val MinimalistaOpFundo = Color(0xFFE2E8F0)           // Fundo dos operadores Cinza
+val TerminalBackground = Color(0xFF080C08)
 
-val MinimalistaOpTexto = Color(0xFF334155)           // Texto dos operadores
+val TerminalSurface = Color(0xFF101510)
 
-val MinimalistaIgualFundo = Color(0xFF0F172A)        // Preto para o "="
+val TerminalSurfaceVariant = Color(0xFF1B211B)
 
-val MinimalistaIgualTexto = Color(0xFFFFFFFF)        // Texto branco
+val TerminalText = Color(0xFFD5FFD5)
 
-val MinimalistaErroFundo = Color(0xFFFEE2E2)         // Rosa/Vermelho pastel para "C"
-
-val MinimalistaErroTexto = Color(0xFF991B1B)         // Vermelho escuro para o texto
+val TerminalError = Color(0xFFFF5252)

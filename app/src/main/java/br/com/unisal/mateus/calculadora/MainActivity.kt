@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import br.com.unisal.mateus.calculadora.ui.theme.CalculadoraTheme
 import br.com.unisal.mateus.calculadora.ui.theme.TemaDoAPP
 import kotlin.math.cos
@@ -43,26 +44,39 @@ import kotlin.math.tan
 class MainActivity : ComponentActivity() {
 
     var visor by mutableStateOf("0")
+
     val pilhaOperador = mutableListOf<String>()
     val pilhaOperando = mutableListOf<String>()
+
     var aguardandoOperando = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
+
+            // Tema inicialmente utilizado pela aplicação
             var temaSelecionado by remember {
                 mutableStateOf(TemaDoAPP.CLARO)
             }
 
+            // Aplica o tema selecionado à calculadora.
+            // Além dos temas originais, foi adicionado o tema Terminal
             CalculadoraTheme(temaSelecionado) {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = MaterialTheme.colorScheme.background
+                ) { innerPadding ->
+
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
+
                         SeletorDeTemas(
                             temaSelecionado = temaSelecionado,
                             onTemaselecionado = {
@@ -89,13 +103,36 @@ class MainActivity : ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End,
-                fontSize = 32.sp,
-                text = visor
-            )
+            // Visor personalizado da calculadora.
+            // As cores, tipografia, borda e formato acompanham o tema selecionado
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
 
+                color = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.medium,
+
+                border = BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.primary
+                )
+            ) {
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+
+                    textAlign = TextAlign.End,
+                    style = MaterialTheme.typography.displayLarge,
+                    text = visor
+                )
+            }
+
+
+            // Operações percentuais e operadores binários
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -107,6 +144,8 @@ class MainActivity : ComponentActivity() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+
+            // Operações trigonométricas e constante Pi
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -118,6 +157,8 @@ class MainActivity : ComponentActivity() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+
+            // Raiz quadrada, potenciação, fatorial e inverso
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -128,6 +169,7 @@ class MainActivity : ComponentActivity() {
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -140,6 +182,7 @@ class MainActivity : ComponentActivity() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -151,6 +194,7 @@ class MainActivity : ComponentActivity() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -161,6 +205,7 @@ class MainActivity : ComponentActivity() {
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -180,6 +225,53 @@ class MainActivity : ComponentActivity() {
         identificador: BotaoOperacao
     ) {
 
+        // Define a hierarquia visual dos botões
+
+        val coresBotao = when (identificador) {
+
+            BotaoOperacao.IGUALDADE ->
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+
+            BotaoOperacao.LIMPAR ->
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+
+            BotaoOperacao.SOMA,
+            BotaoOperacao.SUBTRACAO,
+            BotaoOperacao.MULTIPLICACAO,
+            BotaoOperacao.DIVISAO,
+            BotaoOperacao.POTENCIA ->
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+
+            BotaoOperacao.SIN,
+            BotaoOperacao.COS,
+            BotaoOperacao.TAN,
+            BotaoOperacao.SQRT,
+            BotaoOperacao.FATORIAL,
+            BotaoOperacao.INVERSO,
+            BotaoOperacao.PI,
+            BotaoOperacao.PERCENTUAL ->
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+
+            else ->
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+        }
+
+
         Button(
             modifier = Modifier
                 .width(80.dp)
@@ -194,20 +286,17 @@ class MainActivity : ComponentActivity() {
                 }
             },
 
-            colors = if (identificador == BotaoOperacao.IGUALDADE) {
+            colors = coresBotao,
 
-                ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError
-                )
+            // O formato do botão acompanha o tema selecionado
+            shape = MaterialTheme.shapes.medium
 
-            } else {
-
-                ButtonDefaults.buttonColors()
-
-            }
         ) {
-            Text(texto)
+
+            Text(
+                text = texto,
+                style = MaterialTheme.typography.labelLarge
+            )
         }
     }
 
@@ -217,6 +306,10 @@ class MainActivity : ComponentActivity() {
         if (aguardandoOperando) {
             visor = "0"
             aguardandoOperando = false
+        }
+
+        if (visor == "Erro") {
+            visor = "0"
         }
 
         if ((visor == "0") &&
@@ -239,34 +332,32 @@ class MainActivity : ComponentActivity() {
             tmp = identificador.ordinal.toString()
         }
 
-        if (visor.length == 1 && visor == "0" && identificador != BotaoOperacao.VIRGULA) {
+        if (visor.length == 1 &&
+            visor == "0" &&
+            identificador != BotaoOperacao.VIRGULA
+        ) {
             visor = tmp
         } else {
             visor += tmp
         }
-
     }
 
 
     fun opPress(identificador: BotaoOperacao) {
 
-        // Limpar
         if (identificador == BotaoOperacao.LIMPAR) {
-
             pilhaOperador.clear()
             pilhaOperando.clear()
-
             aguardandoOperando = false
             visor = "0"
-
             return
         }
 
 
-        // Apagar último número
+        // Remove o último caractere digitado no visor
         if (identificador == BotaoOperacao.APAGAR) {
 
-            if (visor.length > 1) {
+            if (visor.length > 1 && visor != "Erro") {
                 visor = visor.substring(0, visor.length - 1)
             } else {
                 visor = "0"
@@ -276,33 +367,28 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        // Inverter sinal
+        // Inverte o sinal do valor apresentado no visor
         if (identificador == BotaoOperacao.INVERTER_SINAL) {
 
             if (visor != "0" && visor != "Erro") {
-
-                val valor = visor
-                    .replace(",", ".")
-                    .toFloat()
-
-                visor = (-valor).toString().replace(".", ",")
+                val valor = visor.replace(",", ".").toDouble()
+                visor = formataResultado(-valor)
             }
 
             return
         }
 
 
-        // Constante Pi
+        // Insere no visor o valor aproximado da constante Pi
         if (identificador == BotaoOperacao.PI) {
-
             visor = "3,14"
             aguardandoOperando = false
-
             return
         }
 
 
-        // Operações unárias
+        // As operações unárias atuam diretamente sobre o
+        // valor apresentado atualmente no visor
         if (
             identificador == BotaoOperacao.SIN ||
             identificador == BotaoOperacao.COS ||
@@ -313,102 +399,93 @@ class MainActivity : ComponentActivity() {
         ) {
 
             operacaoUnaria(identificador)
-
             return
         }
 
 
-        // Igualdade
         if (identificador == BotaoOperacao.IGUALDADE) {
-
             igualdade()
-
             return
         }
 
-
-        // Se apertar outro operador enquanto está
-        // aguardando o próximo número, troca o operador
-        if (aguardandoOperando) {
-
-            if (pilhaOperador.isNotEmpty()) {
-                pilhaOperador[pilhaOperador.lastIndex] = identificador.name
-            }
-
-            return
-        }
-
-
-        // Primeira operação
-        if (pilhaOperador.isEmpty()) {
-
-            pilhaOperador.add(identificador.name)
-            pilhaOperando.add(visor)
-
-        } else {
-
-            // Executar a operação anterior
-            igualdade()
-
-            // Guardar a nova operação
-            pilhaOperador.add(identificador.name)
-            pilhaOperando.add(visor)
-        }
-
-        aguardandoOperando = true
-    }
-
-
-    fun operacaoUnaria(identificador: BotaoOperacao) {
 
         if (visor == "Erro") {
             return
         }
 
+
+        if (aguardandoOperando && pilhaOperador.isNotEmpty()) {
+            pilhaOperador[pilhaOperador.lastIndex] = identificador.name
+            return
+        }
+
+
+        if (pilhaOperador.isNotEmpty()) {
+            igualdade()
+        }
+
+
+        if (visor != "Erro") {
+            pilhaOperando.add(visor)
+            pilhaOperador.add(identificador.name)
+            aguardandoOperando = true
+        }
+    }
+
+    fun formataResultado(valor: Double): String {
+
+        if (valor % 1 == 0.0) {
+            return valor.toLong().toString()
+        }
+
+        return valor.toString().replace(".", ",")
+    }
+
+
+    // Executa as operações unárias utilizando diretamente
+    // o valor apresentado atualmente no visor
+    fun operacaoUnaria(identificador: BotaoOperacao) {
+
+        if (visor == "Erro") return
+
         try {
 
-            val valor = visor
-                .replace(",", ".")
-                .toFloat()
+            val valor = visor.replace(",", ".").toFloat()
 
 
-            // Seno
+            // Calcula o seno do valor informado
             if (identificador == BotaoOperacao.SIN) {
 
                 visor = sin(valor)
                     .toString()
                     .replace(".", ",")
-
             }
 
 
-            // Cosseno
+            // Calcula o cosseno do valor informado
             else if (identificador == BotaoOperacao.COS) {
 
                 visor = cos(valor)
                     .toString()
                     .replace(".", ",")
-
             }
 
 
-            // Tangente
+            // Calcula a tangente do valor informado
             else if (identificador == BotaoOperacao.TAN) {
 
                 visor = tan(valor)
                     .toString()
                     .replace(".", ",")
-
             }
 
 
-            // Raiz quadrada
+            // Calcula a raiz quadrada do valor
+            // Não é permitido calcular raiz de número negativo
             else if (identificador == BotaoOperacao.SQRT) {
 
                 if (valor < 0) {
-
                     visor = "Erro"
-
                 } else {
 
                     visor = sqrt(valor)
@@ -418,13 +495,12 @@ class MainActivity : ComponentActivity() {
             }
 
 
-            // Inverso
+            // Calcula o inverso do número, equivalente a 1 / x
+            // O inverso de zero é tratado como uma operação inválida
             else if (identificador == BotaoOperacao.INVERSO) {
 
                 if (valor == 0f) {
-
                     visor = "Erro"
-
                 } else {
 
                     visor = (1 / valor)
@@ -434,14 +510,12 @@ class MainActivity : ComponentActivity() {
             }
 
 
-            // Fatorial
+            // Calcula o fatorial através de multiplicações sucessivas
+            // O fatorial é aceito somente para números inteiros
+            // maiores ou iguais a zero
             else if (identificador == BotaoOperacao.FATORIAL) {
 
-                if (
-                    valor < 0 ||
-                    valor % 1 != 0f ||
-                    valor > 170
-                ) {
+                if (valor < 0 || valor % 1 != 0f) {
 
                     visor = "Erro"
 
@@ -451,8 +525,7 @@ class MainActivity : ComponentActivity() {
                     var i = 1
 
                     while (i <= valor.toInt()) {
-
-                        resultado *= i
+                        resultado = resultado * i
                         i++
                     }
 
@@ -461,6 +534,7 @@ class MainActivity : ComponentActivity() {
                         .replace(".", ",")
                 }
             }
+
 
             aguardandoOperando = true
 
@@ -474,104 +548,86 @@ class MainActivity : ComponentActivity() {
 
     fun igualdade() {
 
-        if (
-            pilhaOperador.isEmpty() ||
-            pilhaOperando.isEmpty()
-        ) {
+        if (pilhaOperador.isEmpty() || pilhaOperando.isEmpty()) {
             return
         }
+
 
         if (visor == "Erro") {
             return
         }
 
+
         try {
 
-            val operador = pilhaOperador
-                .removeAt(pilhaOperador.lastIndex)
+            val operador =
+                pilhaOperador.removeAt(pilhaOperador.lastIndex)
+
 
             val operando = pilhaOperando
                 .removeAt(pilhaOperando.lastIndex)
                 .replace(",", ".")
-                .toFloat()
+                .toDouble()
+
 
             val aux = visor
                 .replace(",", ".")
-                .toFloat()
+                .toDouble()
+
+
+            var resultado = 0.0
 
 
             // Soma
             if (operador == BotaoOperacao.SOMA.name) {
-
-                visor = (operando + aux)
-                    .toString()
-                    .replace(".", ",")
-
+                resultado = operando + aux
             }
 
 
             // Subtração
             else if (operador == BotaoOperacao.SUBTRACAO.name) {
-
-                visor = (operando - aux)
-                    .toString()
-                    .replace(".", ",")
-
+                resultado = operando - aux
             }
 
 
             // Multiplicação
             else if (operador == BotaoOperacao.MULTIPLICACAO.name) {
-
-                visor = (operando * aux)
-                    .toString()
-                    .replace(".", ",")
-
+                resultado = operando * aux
             }
 
 
-            // Divisão
+            // Divisão com tratamento para divisão por zero
             else if (operador == BotaoOperacao.DIVISAO.name) {
 
-                if (aux == 0f) {
-
+                if (aux == 0.0) {
                     visor = "Erro"
-
-                } else {
-
-                    visor = (operando / aux)
-                        .toString()
-                        .replace(".", ",")
+                    aguardandoOperando = true
+                    return
                 }
+
+                resultado = operando / aux
             }
 
 
-            // Percentual
+            // Calcula o percentual utilizando os dois operandos
             else if (operador == BotaoOperacao.PERCENTUAL.name) {
-
-                visor = ((operando * aux) / 100)
-                    .toString()
-                    .replace(".", ",")
-
+                resultado = (operando * aux) / 100
             }
 
 
-            // Potenciação
+            // Potenciação:
+            // o primeiro operando é elevado ao segundo operando
             else if (operador == BotaoOperacao.POTENCIA.name) {
-
-                visor = Math.pow(
-                    operando.toDouble(),
-                    aux.toDouble()
-                )
-                    .toFloat()
-                    .toString()
-                    .replace(".", ",")
+                resultado = Math.pow(operando, aux)
             }
 
+
+            visor = formataResultado(resultado)
             aguardandoOperando = true
 
         } catch (e: Exception) {
 
+            // Caso ocorra algum problema durante o cálculo apresenta erro
             visor = "Erro"
             aguardandoOperando = true
         }
@@ -590,9 +646,10 @@ class MainActivity : ComponentActivity() {
         SETE,
         OITO,
         NOVE,
-
         VIRGULA,
 
+
+        // Operações binárias
         SOMA,
         SUBTRACAO,
         MULTIPLICACAO,
@@ -600,6 +657,8 @@ class MainActivity : ComponentActivity() {
         PERCENTUAL,
         POTENCIA,
 
+
+        // Operações matemáticas unárias e constante
         SIN,
         COS,
         TAN,
@@ -608,6 +667,8 @@ class MainActivity : ComponentActivity() {
         INVERSO,
         SQRT,
 
+
+        // Controles da calculadora
         IGUALDADE,
         LIMPAR,
         APAGAR,
@@ -625,6 +686,7 @@ class MainActivity : ComponentActivity() {
             mutableStateOf(false)
         }
 
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -635,19 +697,17 @@ class MainActivity : ComponentActivity() {
             OutlinedButton(
                 onClick = {
                     expandido = true
-                }
+                },
+
+                shape = MaterialTheme.shapes.medium
             ) {
 
                 Text(
                     when (temaSelecionado) {
-
                         TemaDoAPP.CLARO -> "Tema Claro"
-
                         TemaDoAPP.ESCURO -> "Tema Escuro"
-
-                        TemaDoAPP.DINAMICO -> "Tema Dinamico"
-
-                        TemaDoAPP.MINIMALISTA -> "Tema Minimalista"
+                        TemaDoAPP.DINAMICO -> "Tema Dinâmico"
+                        TemaDoAPP.TERMINAL -> "Tema Terminal"
                     }
                 )
             }
@@ -660,10 +720,12 @@ class MainActivity : ComponentActivity() {
                 }
             ) {
 
+
                 DropdownMenuItem(
                     text = {
                         Text("Tema Claro")
                     },
+
                     onClick = {
                         onTemaselecionado(TemaDoAPP.CLARO)
                         expandido = false
@@ -675,6 +737,7 @@ class MainActivity : ComponentActivity() {
                     text = {
                         Text("Tema Escuro")
                     },
+
                     onClick = {
                         onTemaselecionado(TemaDoAPP.ESCURO)
                         expandido = false
@@ -686,16 +749,21 @@ class MainActivity : ComponentActivity() {
                     text = {
                         Text("Tema Dinâmico")
                     },
+
                     onClick = {
                         onTemaselecionado(TemaDoAPP.DINAMICO)
                         expandido = false
                     }
                 )
 
+
                 DropdownMenuItem(
-                    text = { Text("Tema Minimalista") },
+                    text = {
+                        Text("Tema Terminal")
+                    },
+
                     onClick = {
-                        onTemaselecionado(TemaDoAPP.MINIMALISTA)
+                        onTemaselecionado(TemaDoAPP.TERMINAL)
                         expandido = false
                     }
                 )

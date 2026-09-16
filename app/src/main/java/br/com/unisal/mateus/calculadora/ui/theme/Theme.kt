@@ -1,23 +1,26 @@
 package br.com.unisal.mateus.calculadora.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 
 
-enum class TemaDoAPP{
+enum class TemaDoAPP {
     CLARO,
     ESCURO,
     DINAMICO,
-    MINIMALISTA
+    TERMINAL
 }
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -27,38 +30,47 @@ private val DarkColorScheme = darkColorScheme(
     onError = White100
 )
 
+
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
 
-private val MinimalistaColorScheme = lightColorScheme(
-    background = MinimalistaFundo,
-    surface = MinimalistaSuperficie,
-    onSurface = MinimalistaTextoNumero,
 
-    // Operadores principais
-    primaryContainer = MinimalistaOpFundo,
-    onPrimaryContainer = MinimalistaOpTexto,
+// Esquema de cores do tema Terminal
+private val TerminalColorScheme = darkColorScheme(
+    primary = TerminalGreen,
+    onPrimary = TerminalBackground,
 
-    // Botão de Igualdade (Destaque Principal)
-    primary = MinimalistaIgualFundo,
-    onPrimary = MinimalistaIgualTexto,
+    primaryContainer = TerminalGreenDark,
+    onPrimaryContainer = TerminalGreen,
 
-    // Botão Limpar / Atenção
-    errorContainer = MinimalistaErroFundo,
-    onErrorContainer = MinimalistaErroTexto
+    secondary = TerminalGreenLight,
+    onSecondary = TerminalBackground,
+
+    secondaryContainer = TerminalSurfaceVariant,
+    onSecondaryContainer = TerminalGreenLight,
+
+    background = TerminalBackground,
+    onBackground = TerminalText,
+
+    surface = TerminalSurface,
+    onSurface = TerminalText,
+
+    surfaceVariant = TerminalSurfaceVariant,
+    onSurfaceVariant = TerminalText,
+
+    error = TerminalError,
+    onError = TerminalBackground
+)
+
+
+// Formas utilizadas no tema Terminal
+private val TerminalShapes = Shapes(
+    small = RoundedCornerShape(4.dp),
+    medium = RoundedCornerShape(6.dp),
+    large = RoundedCornerShape(8.dp)
 )
 
 
@@ -67,9 +79,11 @@ fun CalculadoraTheme(
     temaDoAPP: TemaDoAPP,
     content: @Composable () -> Unit
 ) {
+
     val context = LocalContext.current
 
-    val eschemaDeCor = when(temaDoAPP) {
+    val eschemaDeCor = when (temaDoAPP) {
+
         TemaDoAPP.CLARO -> {
             LightColorScheme
         }
@@ -82,24 +96,38 @@ fun CalculadoraTheme(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (isSystemInDarkTheme()) {
                     dynamicDarkColorScheme(context)
-                } else{
+                } else {
                     dynamicLightColorScheme(context)
                 }
             } else {
                 LightColorScheme
             }
         }
-        TemaDoAPP.MINIMALISTA -> {
-            MinimalistaColorScheme
+
+        TemaDoAPP.TERMINAL -> {
+            TerminalColorScheme
         }
     }
 
-    // Seleciona a tipografia e formas de acordo com o tema
-    val tipografia = if (temaDoAPP == TemaDoAPP.MINIMALISTA) MinimalistaTypography else Typography
+
+    val tipografia = if (temaDoAPP == TemaDoAPP.TERMINAL) {
+        TerminalTypography
+    } else {
+        Typography
+    }
+
+
+    val formas = if (temaDoAPP == TemaDoAPP.TERMINAL) {
+        TerminalShapes
+    } else {
+        Shapes()
+    }
+
 
     MaterialTheme(
         colorScheme = eschemaDeCor,
-        typography = Typography,
+        typography = tipografia,
+        shapes = formas,
         content = content
     )
 }
